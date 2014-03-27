@@ -6,6 +6,7 @@ function GameManager(size, InputManager, Actuator, StorageManager) {
 
   this.startTiles     = 2;
 
+  this.inputManager.on("place", this.place.bind(this));
   this.inputManager.on("move", this.move.bind(this));
   this.inputManager.on("restart", this.restart.bind(this));
   this.inputManager.on("keepPlaying", this.keepPlaying.bind(this));
@@ -69,6 +70,17 @@ GameManager.prototype.addStartTiles = function () {
   }
 };
 
+// Adds a big tile in a random position
+GameManager.prototype.addBigTile = function () {
+  if (this.grid.cellsAvailable()) {
+    var value = Math.random() < 0.9 ? 1024 : 2048;
+    var tile = new Tile(this.grid.randomAvailableCell(), value);
+
+    this.grid.insertTile(tile);
+  };
+  this.actuate();
+};
+
 // Adds a tile in a random position
 GameManager.prototype.addRandomTile = function () {
   if (this.grid.cellsAvailable()) {
@@ -128,6 +140,13 @@ GameManager.prototype.moveTile = function (tile, cell) {
   this.grid.cells[tile.x][tile.y] = null;
   this.grid.cells[cell.x][cell.y] = tile;
   tile.updatePosition(cell);
+};
+
+
+GameManager.prototype.place = function (key) {
+  var self = this;
+    this.addBigTile();
+
 };
 
 // Move tiles on the grid in the specified direction
